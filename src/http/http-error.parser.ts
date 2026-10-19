@@ -82,12 +82,11 @@ export class HttpErrorParser {
     const status = response.status;
     const extractedMessage = extractErrorMessage(data);
 
-    if (status === 401) {
-      return new SdkAuthError(extractedMessage ?? 'Unauthorized', context, data);
-    }
+    if (status === 401) return new SdkAuthError(extractedMessage ?? 'Unauthorized', context, data);
 
     if (status >= 500) {
       const isHtml = typeof data === 'string' && (data.includes('<html') || data.includes('<!DOCTYPE'));
+
       const serverMessage = isHtml
         ? `Server Error (${status}): Service temporarily unavailable`
         : (extractedMessage ?? `Server error with status code ${status}`);
