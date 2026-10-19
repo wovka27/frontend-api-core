@@ -1,3 +1,9 @@
+## [0.1.1](https://github.com/wovka27/frontend-api-core/compare/v0.1.0...v0.1.1) (2026-10-19)
+
+### Fixed
+
+* show readme diagrams on npm ([9cddf6a](https://github.com/wovka27/frontend-api-core/commit/9cddf6ada5147c2693101f4a006341d3d16a111a))
+
 # Changelog
 
 semantic-release writes versions below this line when it publishes from `master`.
