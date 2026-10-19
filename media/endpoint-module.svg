@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="180" viewBox="0 0 760 180" role="img">
+  <title>Endpoint module</title>
+  <rect width="760" height="180" rx="12" fill="#f6f8fa"/>
+  <g font-family="Segoe UI, sans-serif" font-size="13">
+    <rect x="24" y="36" width="150" height="48" rx="6" fill="#ddf4ff" stroke="#54aeff"/>
+    <text x="99" y="56" text-anchor="middle" fill="#0969da">RouteDescriptor</text>
+    <text x="99" y="74" text-anchor="middle" fill="#0969da" font-size="11">url, method, params, data</text>
+    <rect x="214" y="44" width="140" height="32" rx="6" fill="#fbefff" stroke="#c297ff"/>
+    <text x="284" y="65" text-anchor="middle" fill="#8250df">defineDomainApi</text>
+    <rect x="394" y="44" width="130" height="32" rx="6" fill="#fff1e5" stroke="#fb8f44"/>
+    <text x="459" y="65" text-anchor="middle" fill="#bc4c00">HttpTransport</text>
+    <rect x="214" y="112" width="110" height="32" rx="6" fill="#dafbe1" stroke="#4ac26b"/>
+    <text x="269" y="133" text-anchor="middle" fill="#1a7f37">FactoryMap</text>
+    <rect x="364" y="112" width="130" height="32" rx="6" fill="#fbefff" stroke="#c297ff"/>
+    <text x="429" y="133" text-anchor="middle" fill="#8250df">defineApiSdk</text>
+    <rect x="534" y="112" width="90" height="32" rx="6" fill="#fff8c5" stroke="#d4a72c"/>
+    <text x="579" y="133" text-anchor="middle" fill="#9a6700">Config</text>
+    <rect x="560" y="44" width="150" height="32" rx="6" fill="#24292f"/>
+    <text x="635" y="65" text-anchor="middle" fill="#ffffff">One SDK module</text>
+
+    <g fill="none" stroke="#656d76" stroke-width="1.5" marker-end="url(#arrow)">
+      <path d="M174 60 H214"/>
+      <path d="M354 60 H394"/>
+      <path d="M459 76 V112"/>
+      <path d="M324 128 H364"/>
+      <path d="M494 128 H534"/>
+      <path d="M579 112 V76"/>
+      <path d="M524 60 H560"/>
+    </g>
+  </g>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.2 L 8 5 L 0 8.8 z" fill="#656d76"/>
+    </marker>
+  </defs>
+</svg>

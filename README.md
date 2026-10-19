@@ -18,49 +18,7 @@ The build output is in `dist/`.
 
 ## Architecture
 
-```mermaid
-flowchart TB
-  subgraph app [Application]
-    routes[Endpoint definitions]
-    catalog[Error code catalog]
-  end
-
-  subgraph core [core]
-    domain[defineDomainApi]
-    sdk[defineApiSdk / defineSubApiSdk]
-    context[createApiContext]
-    container[Lazy container]
-    handler[ApiErrorHandler]
-  end
-
-  subgraph http [http]
-    transport[HttpTransport]
-    interceptors[Request and response interceptors]
-    parser[HttpErrorParser]
-  end
-
-  subgraph shared [shared]
-    keys[case-converter]
-    query[paramsSerializer]
-    signals[composeSignals]
-  end
-
-  routes --> domain
-  domain --> sdk
-  catalog --> context
-  sdk --> context
-  sdk --> container
-  container --> domain
-  context --> transport
-  context --> handler
-  transport --> interceptors
-  interceptors --> keys
-  transport --> query
-  transport --> signals
-  transport --> parser
-  parser --> handler
-  transport --> axios[axios]
-```
+![Architecture](media/architecture.svg)
 
 | Directory | Role |
 | --- | --- |
@@ -72,37 +30,7 @@ A call goes through a module method into `HttpTransport`. An interceptor prepare
 
 ## Errors
 
-```mermaid
-flowchart TD
-  fail[HTTP failure] --> parser[HttpErrorParser]
-
-  parser --> canceled[SdkCanceledError]
-  parser --> timeout[SdkTimeoutError]
-  parser --> network[SdkNetworkError]
-  parser --> server[SdkServerError]
-  parser --> auth[SdkAuthError]
-  parser --> forbidden[SdkForbiddenError]
-  parser --> missing[SdkNotFoundError]
-  parser --> rate[SdkRateLimitError]
-  parser --> project[SdkProjectError]
-
-  canceled --> silent[No callback]
-  timeout --> handler[ApiErrorHandler]
-  network --> handler
-  server --> handler
-  forbidden --> handler
-  missing --> handler
-  rate --> handler
-  project --> handler
-
-  auth --> session[invalidateSession]
-  session --> handler
-
-  project --> named[codeHandlers by the error field]
-  named --> known[Code callback]
-  named --> unknown[globalErrorMessage]
-  handler --> unknown
-```
+![Error flow](media/errors.svg)
 
 `SdkTimeoutError` extends `SdkNetworkError`, so a timeout is checked before the generic network error. The handler skips `SdkCanceledError`. A `401` closes the session, then calls `onAuthError`.
 
@@ -138,23 +66,7 @@ Public classes: `SdkNetworkError`, `SdkTimeoutError`, `SdkServerError`, `SdkAuth
 
 ## Endpoint module
 
-```mermaid
-flowchart LR
-  descriptor["RouteDescriptor\nurl, method, params, data"]
-  domain[defineDomainApi]
-  http[HttpTransport]
-  map[FactoryMap]
-  sdk[defineApiSdk]
-  config[Config]
-  module[One SDK module]
-
-  descriptor --> domain
-  domain --> http
-  http --> map
-  map --> sdk
-  config --> sdk
-  sdk --> module
-```
+![Endpoint module](media/endpoint-module.svg)
 
 `defineDomainApi` describes the endpoints of one domain and does not perform a request. `defineApiSdk` composes several domains into one module: a domain factory runs once, on the first access to its field. The second call, `defineApiSdk(factories)(config)`, creates the context and returns the module together with `resetSession` and `invalidateSession`.
 
