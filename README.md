@@ -6,16 +6,6 @@ HTTP client core for a frontend API SDK. The package provides an axios transport
 
 The only dependency is `axios`.
 
-## Build
-
-```bash
-npm install
-npm run type-check
-npm run build
-```
-
-The build output is in `dist/`.
-
 ## Architecture
 
 ![Architecture](media/architecture.svg)
