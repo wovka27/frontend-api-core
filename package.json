@@ -4,6 +4,10 @@
   "sideEffects": false,
   "description": "Frontend API SDK core",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wovka27/frontend-api-core.git"
+  },
   "type": "module",
   "exports": {
     ".": {
