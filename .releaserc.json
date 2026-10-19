@@ -21,17 +21,17 @@
         "preset": "conventionalcommits",
         "presetConfig": {
           "types": [
-            { "type": "feat", "section": "Added", "effect": "bump" },
-            { "type": "fix", "section": "Fixed", "effect": "bump" },
-            { "type": "perf", "section": "Changed", "effect": "bump" },
-            { "type": "revert", "section": "Fixed", "effect": "bump" },
-            { "type": "docs", "section": "Documentation", "effect": "hidden" },
-            { "type": "style", "section": "Styles", "effect": "hidden" },
-            { "type": "chore", "section": "Miscellaneous", "effect": "hidden" },
-            { "type": "refactor", "section": "Code Refactoring", "effect": "hidden" },
-            { "type": "test", "section": "Tests", "effect": "hidden" },
-            { "type": "build", "section": "Build System", "effect": "hidden" },
-            { "type": "ci", "section": "Continuous Integration", "effect": "hidden" }
+            { "type": "feat", "section": "Added" },
+            { "type": "fix", "section": "Fixed" },
+            { "type": "perf", "section": "Changed" },
+            { "type": "revert", "section": "Fixed" },
+            { "type": "docs", "section": "Documentation", "hidden": true },
+            { "type": "style", "section": "Styles", "hidden": true },
+            { "type": "chore", "section": "Miscellaneous", "hidden": true },
+            { "type": "refactor", "section": "Code Refactoring", "hidden": true },
+            { "type": "test", "section": "Tests", "hidden": true },
+            { "type": "build", "section": "Build System", "hidden": true },
+            { "type": "ci", "section": "Continuous Integration", "hidden": true }
           ]
         }
       }
