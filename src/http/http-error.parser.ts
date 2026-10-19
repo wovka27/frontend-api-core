@@ -94,9 +94,7 @@ export class HttpErrorParser {
       return new SdkServerError(serverMessage, context, isHtml);
     }
 
-    if (isApiErrorPayload(data)) {
-      return new SdkProjectError(data, context);
-    }
+    if (isApiErrorPayload(data)) return new SdkProjectError(data, context);
 
     switch (status) {
       case 403:
