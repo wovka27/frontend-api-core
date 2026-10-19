@@ -3,13 +3,13 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - master
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-main
+  group: release-master
   cancel-in-progress: false
 
 env:
@@ -32,7 +32,7 @@ jobs:
       - run: npm ci
       - run: npm run ci
 
-      - name: Validate commits pushed to main
+      - name: Validate commits pushed to master
         run: |
           if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
             echo "Initial push, skip range lint"

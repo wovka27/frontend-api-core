@@ -221,13 +221,13 @@ export function renderPullRequestChangelog(summary, version) {
     lines.push(`Baseline version: \`${version.currentVersion}\` (tag \`${version.baselineTag}\`).`);
   } else {
     lines.push(
-      `No \`v*\` baseline tag yet. The release on \`main\` waits until tag \`v${version.currentVersion}\` matches \`package.json\`.`,
+      `No \`v*\` baseline tag yet. The release on \`master\` waits until tag \`v${version.currentVersion}\` matches \`package.json\`.`,
     );
   }
 
   if (version.nextVersion && version.level) {
     lines.push(
-      `Next version after merge into \`main\`: **\`${version.nextVersion}\`** (${version.level}).`,
+      `Next version after merge into \`master\`: **\`${version.nextVersion}\`** (${version.level}).`,
     );
   } else {
     lines.push('No release: none of the commits are `feat`, `fix`, `perf`, `revert`, or a breaking change.');
@@ -236,7 +236,7 @@ export function renderPullRequestChangelog(summary, version) {
   if (version.mainAffectsVersion) {
     const prImpact = version.prLevel ?? 'no release';
     lines.push(`This pull request: ${prImpact}.`);
-    lines.push('Unreleased commits already on `main` since the last tag are included in the version.');
+    lines.push('Unreleased commits already on `master` since the last tag are included in the version.');
   }
 
   lines.push('');

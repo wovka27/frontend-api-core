@@ -179,7 +179,7 @@ describe('changelogForRange', () => {
       const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' }).trim();
 
       const markdown = changelogForRange(base, head, cwd);
-      assert.match(markdown, /Next version after merge into `main`: \*\*`0\.2\.0`\*\* \(minor\)/);
+      assert.match(markdown, /Next version after merge into `master`: \*\*`0\.2\.0`\*\* \(minor\)/);
       assert.match(markdown, /This pull request: patch/);
       assert.match(markdown, /### Fixed/);
       assert.match(markdown, /read an empty body/);

@@ -248,7 +248,7 @@ The response type follows the flag. `createApiContext({ convertCase: true })` re
 
 ## Commits and publishing
 
-Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and determine the [SemVer](https://semver.org/spec/v2.0.0.html) version. On a pull request, commitlint checks the whole range and a changelog comment is posted from those commits. After a merge into `main`, semantic-release updates `CHANGELOG.md`, creates a tag, and publishes the package to npm.
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and determine the [SemVer](https://semver.org/spec/v2.0.0.html) version. On a pull request, commitlint checks the whole range and a changelog comment is posted from those commits. After a merge into `master`, semantic-release updates `CHANGELOG.md`, creates a tag, and publishes the package to npm.
 
 Rules, examples, and CI secrets: [docs/commits.md](docs/commits.md).
 

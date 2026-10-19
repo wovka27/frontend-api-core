@@ -14,7 +14,7 @@ flowchart LR
   ci[Lint, test, build]
   lintc[commitlint range]
   notes[Changelog comment]
-  main[Merge into main]
+  master[Merge into master]
   release[semantic-release]
   tag[Tag vX.Y.Z]
   log[CHANGELOG.md]
@@ -25,7 +25,7 @@ flowchart LR
   pr --> ci
   pr --> lintc
   pr --> notes
-  pr --> main --> release
+  pr --> master --> release
   release --> tag
   release --> log
   release --> npm
@@ -115,7 +115,7 @@ update
 fix bug
 feat: Add a flag.
 feat(HTTP): add a flag
-Merge branch 'main' into feature
+Merge branch 'master' into feature
 ```
 
 `Merge ...`, `fixup!`, and `squash!` messages are ignored. They are Git bookkeeping, not release notes.
@@ -141,8 +141,8 @@ npx husky
 Check a range without creating a commit:
 
 ```text
-npx commitlint --from main --to HEAD --verbose
-node scripts/changelog-from-commits.mjs --from main --to HEAD
+npx commitlint --from master --to HEAD --verbose
+node scripts/changelog-from-commits.mjs --from master --to HEAD
 ```
 
 The same check CI runs:
@@ -163,17 +163,17 @@ Every pull request runs the `CI` workflow:
 | `Conventional commits` | commitlint from the pull request base to its head |
 | `Changelog` | posts the changelog comment and updates that same comment on every new commit |
 
-The comment groups the commits of **this** pull request into Added, Changed, Fixed, and BREAKING CHANGES. The next version also includes unreleased commits on `main` after the latest tag. If `main` already contains a higher change, the comment states this pull request's own impact separately.
+The comment groups the commits of **this** pull request into Added, Changed, Fixed, and BREAKING CHANGES. The next version also includes unreleased commits on `master` after the latest tag. If `master` already contains a higher change, the comment states this pull request's own impact separately.
 
 `CHANGELOG.md` is not rewritten on the pull request. semantic-release writes it at publish time, in one commit: `chore(release): x.y.z [skip ci]`.
 
 Merge with **Create a merge commit** or **Rebase and merge**. Each conventional commit stays in history, and the changelog is built from them. **Squash and merge** leaves a single message, and that message is the only release note, so the squash title must be conventional too.
 
-On branch protection for `main`, require the checks `Lint, test, build` and `Conventional commits`.
+On branch protection for `master`, require the checks `Lint, test, build` and `Conventional commits`.
 
 ## Release
 
-The `Release` workflow runs on a push to `main`.
+The `Release` workflow runs on a push to `master`.
 
 1. It runs `npm run ci` again and commitlint on the new commits.
 2. It requires a baseline tag `vX.Y.Z`.
@@ -189,7 +189,7 @@ Do not edit the version in `package.json` by hand. semantic-release owns it.
 
 `package.json` is currently `0.1.0`, and that version has not been published. Without a tag, semantic-release would treat the first release as `1.0.0`, so the release workflow stops when no `v*` tag exists.
 
-After the first push to `main`, on the commit that matches this version:
+After the first push to `master`, on the commit that matches this version:
 
 ```text
 git tag -a v0.1.0 -m "chore(release): 0.1.0"
@@ -204,7 +204,7 @@ In the GitHub repository: Settings → Secrets and variables → Actions → `NP
 
 The npm token is an Automation token, or a granular token, with publish rights for `frontend-api-core`. The name must be free on npm. If it is taken, publish under a scope and change `name` in `package.json`. `publishConfig.access` is already `public` for a scoped package.
 
-Actions creates `GITHUB_TOKEN` itself. That token needs permission to push to `main`, or the `CHANGELOG.md` commit never lands. If `main` is protected, add `github-actions[bot]` to the bypass list.
+Actions creates `GITHUB_TOKEN` itself. That token needs permission to push to `master`, or the `CHANGELOG.md` commit never lands. If `master` is protected, add `github-actions[bot]` to the bypass list.
 
 Dry run locally, without publishing or creating tags:
 
@@ -222,6 +222,6 @@ npx semantic-release --dry-run
 | `.husky/commit-msg` | Local commitlint |
 | `.releaserc.json` | semantic-release: commit analysis, changelog, npm, GitHub |
 | `.github/workflows/ci.yml` | Pull request checks and the comment |
-| `.github/workflows/release.yml` | Publish from `main` |
+| `.github/workflows/release.yml` | Publish from `master` |
 | `CHANGELOG.md` | Release history |
 | `LICENSE` | MIT |
