@@ -1,0 +1,20 @@
+# .gitignore excludes dist, and npm would reuse that list if this file were absent.
+# The published package must contain the build from `files`.
+
+src/
+scripts/
+.github/
+.husky/
+.idea/
+.vscode/
+docs/
+commitlint.config.js
+eslint.config.js
+tsup.config.ts
+tsconfig.json
+.releaserc.json
+.nvmrc
+.prettierignore
+.gitattributes
+.prettierrc
+.prettierrc.js
