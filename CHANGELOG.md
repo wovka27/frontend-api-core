@@ -1,3 +1,9 @@
+## [0.1.2](https://github.com/wovka27/frontend-api-core/compare/v0.1.1...v0.1.2) (2026-10-19)
+
+### Fixed
+
+* Change https-error.parser.ts ([fe888dc](https://github.com/wovka27/frontend-api-core/commit/fe888dc39d88d5915c16d7ea6db5847a1a8d35fe))
+
 ## [0.1.1](https://github.com/wovka27/frontend-api-core/compare/v0.1.0...v0.1.1) (2026-10-19)
 
 ### Fixed
