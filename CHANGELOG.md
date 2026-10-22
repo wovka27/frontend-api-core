@@ -1,3 +1,9 @@
+## [0.1.3](https://github.com/wovka27/frontend-api-core/compare/v0.1.2...v0.1.3) (2026-10-22)
+
+### Fixed
+
+* **http transport:** remove condition ([cd0d4ca](https://github.com/wovka27/frontend-api-core/commit/cd0d4ca0b250f49b65d13cbd6143a4aea60e02d7))
+
 ## [0.1.2](https://github.com/wovka27/frontend-api-core/compare/v0.1.1...v0.1.2) (2026-10-19)
 
 ### Fixed
