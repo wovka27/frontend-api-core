@@ -69,7 +69,6 @@ export class HttpTransport<TConvertCase extends boolean = false> {
 
       if (locale) req.headers['Accept-Language'] = locale.toLowerCase();
       if (this.convertCase && req.data) req.data = keysToSnake(req.data);
-      if (req.headers['Content-Type'] === 'multipart/form-data') req.data.data = JSON.stringify(req.data.data);
       if (this.convertCase && req.params) req.params = keysToSnake(req.params);
 
       if (!isAuthExempt) {
