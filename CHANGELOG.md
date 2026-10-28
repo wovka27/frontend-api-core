@@ -1,3 +1,9 @@
+## [0.2.0](https://github.com/wovka27/frontend-api-core/compare/v0.1.4...v0.2.0) (2026-10-28)
+
+### Added
+
+* improve params serialization and centralize error messages ([dcf6e9c](https://github.com/wovka27/frontend-api-core/commit/dcf6e9c52284c2cf1777eeeeb37ac421872ecd68))
+
 ## [0.1.4](https://github.com/wovka27/frontend-api-core/compare/v0.1.3...v0.1.4) (2026-10-28)
 
 ### Fixed
