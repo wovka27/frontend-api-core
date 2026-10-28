@@ -1,3 +1,9 @@
+## [0.1.4](https://github.com/wovka27/frontend-api-core/compare/v0.1.3...v0.1.4) (2026-10-28)
+
+### Fixed
+
+* correct raw responses and request config handling ([c04c214](https://github.com/wovka27/frontend-api-core/commit/c04c2144011a2d132751dc3e2e94734e9833a1c0))
+
 ## [0.1.3](https://github.com/wovka27/frontend-api-core/compare/v0.1.2...v0.1.3) (2026-10-22)
 
 ### Fixed
