@@ -122,6 +122,36 @@ The last argument of a method is an optional `SdkRequestConfig`. Pass it in the 
 await sdk.account.profile.getProfile({ timeout: 5_000, signal: controller.signal });
 ```
 
+Axios `paramsSerializer` can be configured for the whole client or overridden for one request. By default, the SDK serializes nested objects and arrays with bracket notation. Use the per-request option when an endpoint expects a different query format:
+
+```ts
+const api = createApiContext({
+  baseUrl: '/api',
+  paramsSerializer: {
+    serialize: (params) => {
+      const search = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (Array.isArray(value)) value.forEach((item) => search.append(key, String(item)));
+        else if (value !== null && value !== undefined) search.append(key, String(value));
+      });
+      return search.toString();
+    },
+  },
+});
+
+await api.http.get('/items', {
+  params: { ids: [10, 20] },
+});
+
+// Per-request Axios serializer settings override the client defaults.
+await api.http.get('/legacy/items', {
+  params: { ids: [10, 20] },
+  paramsSerializer: { indexes: null },
+});
+```
+
+The serializer may be a function or an Axios `paramsSerializer` options object (`encode`, `serialize`, and `indexes`). Since it is part of `SdkRequestConfig`, it is available on raw `http` calls and as the optional final config argument on domain methods.
+
 Domain methods return the response body. `http.getRaw()` returns the full Axios response when code needs status or headers; for binary requests, `responseType: 'blob'` returns the `Blob` body, and `getRaw()` can be used to retain its headers too.
 
 A client without a module:

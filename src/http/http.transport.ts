@@ -4,11 +4,11 @@ import { normalizeResponse } from '@/http/http.interceptors';
 import { HttpErrorParser } from '@/http/http-error.parser';
 
 import type { ApiErrorHandler } from '@/core/error-handler';
+import { ERROR_MESSAGES } from '@/core/error-messages';
 import { SdkAuthError } from '@/core/errors';
 import type { SdkRequestConfig } from '@/core/types';
 import { SIGNAL_CLEANUP_KEY } from '@/core/types';
 
-import { paramsSerializer } from '@/shared';
 import type { ResponseBody } from '@/shared/types/case-converter';
 import { keysToSnake } from '@/shared/utils/case-converter';
 import { composeSignals } from '@/shared/utils/compose-signals';
@@ -38,16 +38,11 @@ export class HttpTransport<TConvertCase extends boolean = false> {
   constructor(config: TransportConfig, errorHandler: ApiErrorHandler) {
     this.errorHandler = errorHandler;
     this.convertCase = (config.convertCase ?? false) as TConvertCase;
-    this.instance = axios.create({
-      withCredentials: true,
-      paramsSerializer,
-      ...config,
-      baseURL: config.baseURL ?? config.baseUrl ?? '/api',
-    });
+    this.instance = axios.create({ withCredentials: true, ...config });
     this.setupInterceptors(config);
   }
 
-  public invalidateSession(reason = 'Unauthorized: Active requests cancelled'): void {
+  public invalidateSession(reason: string = ERROR_MESSAGES.activeRequestsCancelled): void {
     if (this.isSessionInvalidated) return;
     this.isSessionInvalidated = true;
 
@@ -65,7 +60,7 @@ export class HttpTransport<TConvertCase extends boolean = false> {
       const isAuthExempt = Boolean(customConfig.skipAuthAbort);
 
       if (this.isSessionInvalidated && !isAuthExempt) {
-        return Promise.reject(new SdkAuthError('Request blocked: User session is expired (401)'));
+        return Promise.reject(new SdkAuthError(ERROR_MESSAGES.sessionExpired));
       }
 
       const locale = config.getLocales?.();
@@ -103,7 +98,7 @@ export class HttpTransport<TConvertCase extends boolean = false> {
         const sdkError = await HttpErrorParser.parse(rawAxiosError, this.convertCase);
 
         if (sdkError instanceof SdkAuthError) {
-          this.invalidateSession('Unauthorized: Session terminated by 401 response');
+          this.invalidateSession(ERROR_MESSAGES.sessionTerminated);
         }
 
         const requestConfig = (axios.isAxiosError(rawAxiosError) ? rawAxiosError.config : undefined) as

@@ -3,6 +3,7 @@ export * from '@/core/base-sdk';
 export * from '@/core/define-domain';
 export * from '@/core/error-code';
 export * from '@/core/error-handler';
+export * from '@/core/error-messages';
 export * from '@/core/errors';
 export * from '@/core/lazy-container';
 export * from '@/core/type-guards';

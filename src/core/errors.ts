@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from '@/core/error-messages';
 import type { ApiErrorPayload, SdkErrorContext } from '@/core/types';
 
 export abstract class SdkError extends Error {
@@ -16,19 +17,19 @@ export abstract class SdkError extends Error {
 }
 
 export class SdkNetworkError extends SdkError {
-  constructor(message = 'Network error: Failed to connect to server', context?: SdkErrorContext) {
+  constructor(message: string = ERROR_MESSAGES.networkError, context?: SdkErrorContext) {
     super(message, context);
   }
 }
 
 export class SdkTimeoutError extends SdkNetworkError {
-  constructor(message = 'Request timeout exceeded', context?: SdkErrorContext) {
+  constructor(message: string = ERROR_MESSAGES.requestTimeout, context?: SdkErrorContext) {
     super(message, context);
   }
 }
 
 export class SdkCanceledError extends SdkError {
-  constructor(message = 'Request was canceled', context?: SdkErrorContext) {
+  constructor(message: string = ERROR_MESSAGES.requestCanceled, context?: SdkErrorContext) {
     super(message, context);
   }
 }
@@ -45,20 +46,20 @@ export class SdkServerError extends SdkError {
 export class SdkAuthError<TPayload = unknown> extends SdkError {
   public readonly payload?: TPayload;
 
-  constructor(message = 'Unauthorized: Session is invalid or expired', context?: SdkErrorContext, payload?: TPayload) {
+  constructor(message: string = ERROR_MESSAGES.authSessionInvalid, context?: SdkErrorContext, payload?: TPayload) {
     super(message, { ...context, statusCode: 401 });
     this.payload = payload;
   }
 }
 
 export class SdkForbiddenError extends SdkError {
-  constructor(message = 'Forbidden: Access denied', context?: SdkErrorContext) {
+  constructor(message: string = ERROR_MESSAGES.forbidden, context?: SdkErrorContext) {
     super(message, context);
   }
 }
 
 export class SdkNotFoundError extends SdkError {
-  constructor(message = 'Resource not found', context?: SdkErrorContext) {
+  constructor(message: string = ERROR_MESSAGES.resourceNotFound, context?: SdkErrorContext) {
     super(message, context);
   }
 }
@@ -66,7 +67,7 @@ export class SdkNotFoundError extends SdkError {
 export class SdkRateLimitError extends SdkError {
   public readonly retryAfterSeconds?: number;
 
-  constructor(message = 'Too many requests', retryAfter?: number, context?: SdkErrorContext) {
+  constructor(message: string = ERROR_MESSAGES.tooManyRequests, retryAfter?: number, context?: SdkErrorContext) {
     super(message, context);
     this.retryAfterSeconds = retryAfter;
   }
@@ -78,7 +79,7 @@ export class SdkProjectError<
   public readonly payload: TPayload;
 
   constructor(payload: TPayload, context: SdkErrorContext) {
-    super(payload.message || `Project error [${payload.code}]`, context);
+    super(payload.message || ERROR_MESSAGES.projectError(payload.code), context);
     this.payload = payload;
   }
 

@@ -13,6 +13,7 @@ import {
   SdkServerError,
   SdkTimeoutError,
 } from '@/core';
+import { ERROR_MESSAGES } from '@/core/error-messages';
 import { extractErrorMessage, isApiErrorPayload } from '@/core/type-guards';
 
 import { keysToCamel } from '@/shared/utils/case-converter';
@@ -20,7 +21,7 @@ import { keysToCamel } from '@/shared/utils/case-converter';
 export class HttpErrorParser {
   public static async parse(error: unknown, convertCase = false): Promise<SdkError> {
     if (axios.isCancel(error)) {
-      const message = error instanceof Error ? error.message : 'Request was canceled';
+      const message = error instanceof Error ? error.message : ERROR_MESSAGES.requestCanceled;
 
       if (error instanceof Error && 'cause' in error && error.cause instanceof SdkAuthError) return error.cause;
 
@@ -29,7 +30,7 @@ export class HttpErrorParser {
 
     if (!axios.isAxiosError(error)) {
       if (error instanceof SdkError) return error;
-      return new SdkServerError(error instanceof Error ? error.message : 'Unknown runtime error', {
+      return new SdkServerError(error instanceof Error ? error.message : ERROR_MESSAGES.unknownRuntimeError, {
         originalError: error,
       });
     }
@@ -53,9 +54,9 @@ export class HttpErrorParser {
 
     if (!response) {
       if (code === 'ECONNABORTED' || error.message.toLowerCase().includes('timeout')) {
-        return new SdkTimeoutError('Request timeout exceeded', context);
+        return new SdkTimeoutError(ERROR_MESSAGES.requestTimeout, context);
       }
-      return new SdkNetworkError(error.message || 'Network connection failed', context);
+      return new SdkNetworkError(error.message || ERROR_MESSAGES.networkConnectionFailed, context);
     }
 
     let rawData: unknown = response.data;
@@ -82,14 +83,14 @@ export class HttpErrorParser {
     const status = response.status;
     const extractedMessage = extractErrorMessage(data);
 
-    if (status === 401) return new SdkAuthError(extractedMessage ?? 'Unauthorized', context, data);
+    if (status === 401) return new SdkAuthError(extractedMessage ?? ERROR_MESSAGES.unauthorized, context, data);
 
     if (status >= 500) {
       const isHtml = typeof data === 'string' && (data.includes('<html') || data.includes('<!DOCTYPE'));
 
       const serverMessage = isHtml
-        ? `Server Error (${status}): Service temporarily unavailable`
-        : (extractedMessage ?? `Server error with status code ${status}`);
+        ? ERROR_MESSAGES.serverTemporarilyUnavailable(status)
+        : (extractedMessage ?? ERROR_MESSAGES.serverErrorStatus(status));
 
       return new SdkServerError(serverMessage, context, isHtml);
     }
@@ -98,16 +99,16 @@ export class HttpErrorParser {
 
     switch (status) {
       case 403:
-        return new SdkForbiddenError(extractedMessage ?? 'Forbidden', context);
+        return new SdkForbiddenError(extractedMessage ?? ERROR_MESSAGES.forbiddenResponse, context);
       case 404:
-        return new SdkNotFoundError(extractedMessage ?? 'Not Found', context);
+        return new SdkNotFoundError(extractedMessage ?? ERROR_MESSAGES.notFoundResponse, context);
       case 429: {
         const retryHeader = response.headers?.['retry-after'];
         const retrySeconds = this.parseRetryAfter(retryHeader);
-        return new SdkRateLimitError(extractedMessage ?? 'Too many requests', retrySeconds, context);
+        return new SdkRateLimitError(extractedMessage ?? ERROR_MESSAGES.tooManyRequests, retrySeconds, context);
       }
       default:
-        return new SdkServerError(extractedMessage ?? `HTTP Request failed with status ${status}`, context);
+        return new SdkServerError(extractedMessage ?? ERROR_MESSAGES.httpRequestFailed(status), context);
     }
   }
 

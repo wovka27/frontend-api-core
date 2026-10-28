@@ -10,6 +10,7 @@ import {
   SdkTimeoutError,
 } from '@/core';
 import type { ErrorCodeCatalog, ErrorCodeNameOf } from '@/core/error-code';
+import { ERROR_MESSAGES } from '@/core/error-messages';
 import type { ApiBaseError } from '@/core/types';
 
 export type ErrorHandlerCallback<TError extends SdkError> = (error: TError) => void;
@@ -45,21 +46,21 @@ export class ApiErrorHandler {
         localConfig?.onTimeout ?? this.config.onTimeout ?? localConfig?.onNetworkError ?? this.config.onNetworkError;
 
       handler?.(error);
-      this.notifyFallback(error, 'Request timeout. Check your connection.', skipGlobal);
+      this.notifyFallback(error, ERROR_MESSAGES.timeoutFallback, skipGlobal);
       return;
     }
 
     if (error instanceof SdkNetworkError) {
       const handler = localConfig?.onNetworkError ?? this.config.onNetworkError;
       handler?.(error);
-      this.notifyFallback(error, 'No internet connection', skipGlobal);
+      this.notifyFallback(error, ERROR_MESSAGES.offlineFallback, skipGlobal);
       return;
     }
 
     if (error instanceof SdkServerError) {
       const handler = localConfig?.onServerError ?? this.config.onServerError;
       handler?.(error);
-      this.notifyFallback(error, 'Server error occurred. Please try again later.', skipGlobal);
+      this.notifyFallback(error, ERROR_MESSAGES.serverFallback, skipGlobal);
       return;
     }
 
@@ -70,13 +71,13 @@ export class ApiErrorHandler {
 
     if (error instanceof SdkForbiddenError) {
       (localConfig?.onForbidden ?? this.config.onForbidden)?.(error);
-      this.notifyFallback(error, 'You do not have permission for this action', skipGlobal);
+      this.notifyFallback(error, ERROR_MESSAGES.forbiddenFallback, skipGlobal);
       return;
     }
 
     if (error instanceof SdkRateLimitError) {
       (localConfig?.onRateLimit ?? this.config.onRateLimit)?.(error);
-      this.notifyFallback(error, 'Too many requests. Please slow down.', skipGlobal);
+      this.notifyFallback(error, ERROR_MESSAGES.rateLimitFallback, skipGlobal);
       return;
     }
 
