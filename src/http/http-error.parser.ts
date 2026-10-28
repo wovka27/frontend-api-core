@@ -103,15 +103,23 @@ export class HttpErrorParser {
         return new SdkNotFoundError(extractedMessage ?? 'Not Found', context);
       case 429: {
         const retryHeader = response.headers?.['retry-after'];
-        const retrySeconds = typeof retryHeader === 'string' ? parseInt(retryHeader, 10) : undefined;
-        return new SdkRateLimitError(
-          extractedMessage ?? 'Too many requests',
-          Number.isNaN(retrySeconds) ? undefined : retrySeconds,
-          context
-        );
+        const retrySeconds = this.parseRetryAfter(retryHeader);
+        return new SdkRateLimitError(extractedMessage ?? 'Too many requests', retrySeconds, context);
       }
       default:
         return new SdkServerError(extractedMessage ?? `HTTP Request failed with status ${status}`, context);
     }
+  }
+
+  private static parseRetryAfter(value: unknown): number | undefined {
+    if (typeof value !== 'string' || value.trim() === '') return undefined;
+
+    const trimmed = value.trim();
+    if (/^\d+(?:\.\d+)?$/.test(trimmed)) return Number(trimmed);
+
+    const retryAt = Date.parse(trimmed);
+    if (Number.isNaN(retryAt)) return undefined;
+
+    return Math.max(0, Math.ceil((retryAt - Date.now()) / 1000));
   }
 }

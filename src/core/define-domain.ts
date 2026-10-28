@@ -32,6 +32,70 @@ export type ExecutableApi<TDefinitions, TConvertCase extends boolean = false> = 
 export type RouteHandler = ((...args: never[]) => RouteDescriptor<unknown>) | ((...args: never[]) => Promise<unknown>);
 export type DomainDefinitions = Record<string, RouteHandler>;
 
+const REQUEST_CONFIG_KEYS = new Set([
+  'adapter',
+  'allowAbsoluteUrls',
+  'allowedSocketPaths',
+  'auth',
+  'baseURL',
+  'beforeRedirect',
+  'cancelToken',
+  'data',
+  'decompress',
+  'env',
+  'errorConfig',
+  'family',
+  'fetchOptions',
+  'formDataHeaderPolicy',
+  'formSerializer',
+  'headers',
+  'httpAgent',
+  'http2Options',
+  'httpVersion',
+  'httpsAgent',
+  'insecureHTTPParser',
+  'lookup',
+  'maxBodyLength',
+  'maxContentLength',
+  'maxRedirects',
+  'maxRate',
+  'method',
+  'onDownloadProgress',
+  'onUploadProgress',
+  'parseReviver',
+  'params',
+  'paramsSerializer',
+  'proxy',
+  'redact',
+  'responseEncoding',
+  'responseType',
+  'signal',
+  'sensitiveHeaders',
+  'skipAuthAbort',
+  'socketPath',
+  'timeout',
+  'timeoutErrorMessage',
+  'transport',
+  'transformRequest',
+  'transformResponse',
+  'transitional',
+  'url',
+  'validateStatus',
+  'withCredentials',
+  'withXSRFToken',
+  'xsrfCookieName',
+  'xsrfHeaderName',
+  'retry',
+]);
+
+// Function.length only counts required parameters, so distinguish Axios config
+// by its own keys instead of treating every trailing object as transport config.
+function isRequestConfig(value: unknown): value is SdkRequestConfig {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+
+  return Object.keys(value).some((key) => REQUEST_CONFIG_KEYS.has(key));
+}
+
 export function defineDomainApi<TDefinitions extends DomainDefinitions>(
   factory: (http: HttpTransport) => TDefinitions
 ): <TConvertCase extends boolean = false>(
@@ -47,10 +111,11 @@ export function defineDomainApi<TDefinitions extends DomainDefinitions>(
       client[methodName] = (...rawArgs: readonly unknown[]): Promise<unknown> => {
         const args = [...rawArgs];
 
-        const hasExtraConfig = args.length > handler.length;
-        const config = (hasExtraConfig ? args.pop() : undefined) as SdkRequestConfig | undefined;
+        const candidateConfig = args[args.length - 1];
+        const hasExtraConfig = args.length > handler.length && isRequestConfig(candidateConfig);
+        const config = hasExtraConfig ? (args.pop() as SdkRequestConfig) : undefined;
 
-        const result = (handler as (...args: unknown[]) => unknown)(...rawArgs);
+        const result = (handler as (...args: unknown[]) => unknown)(...args);
 
         if (result instanceof Promise || (result && typeof (result as Record<string, unknown>).then === 'function')) {
           return result as Promise<unknown>;

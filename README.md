@@ -10,10 +10,10 @@ The only dependency is `axios`.
 
 ![Architecture](media/architecture.svg)
 
-| Directory | Role |
-| --- | --- |
-| `src/core` | Config, context, module definitions, lazy container, errors |
-| `src/http` | `HttpTransport`, interceptors, HTTP error parsing |
+| Directory    | Role                                                           |
+| ------------ | -------------------------------------------------------------- |
+| `src/core`   | Config, context, module definitions, lazy container, errors    |
+| `src/http`   | `HttpTransport`, interceptors, HTTP error parsing              |
 | `src/shared` | Key conversion, query serialization, `AbortSignal` composition |
 
 A call goes through a module method into `HttpTransport`. An interceptor prepares the body and the query, axios performs the request, and the response returns to the method. A failure goes to `HttpErrorParser`, then to `ApiErrorHandler`.
@@ -118,6 +118,12 @@ await sdk.account.settings.getSettings();
 
 The last argument of a method is an optional `SdkRequestConfig`. Pass it in the same call as the endpoint.
 
+```ts
+await sdk.account.profile.getProfile({ timeout: 5_000, signal: controller.signal });
+```
+
+Domain methods return the response body. `http.getRaw()` returns the full Axios response when code needs status or headers; for binary requests, `responseType: 'blob'` returns the `Blob` body, and `getRaw()` can be used to retain its headers too.
+
 A client without a module:
 
 ```ts
@@ -129,6 +135,8 @@ const api = createApiContext({
 });
 
 await api.http.get<{ id: string }>('/profile');
+const response = await api.http.getRaw<{ id: string }>({ url: '/profile' });
+console.log(response.status, response.headers);
 ```
 
 ## Key case

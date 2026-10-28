@@ -13,6 +13,9 @@ import type { ResponseBody } from '@/shared/types/case-converter';
 import { keysToSnake } from '@/shared/utils/case-converter';
 import { composeSignals } from '@/shared/utils/compose-signals';
 
+const RAW_RESPONSE_KEY = '__sdkRawResponse';
+type RawResponseConfig = SdkRequestConfig & { [RAW_RESPONSE_KEY]?: boolean };
+
 export interface HttpRequestOptions<TData = unknown> extends SdkRequestConfig {
   url: string;
   method?: Method | string;
@@ -84,8 +87,10 @@ export class HttpTransport<TConvertCase extends boolean = false> {
 
     this.instance.interceptors.response.use(
       (response) => {
-        const customConfig = response.config as SdkRequestConfig | undefined;
+        const customConfig = response.config as RawResponseConfig | undefined;
         customConfig?.[SIGNAL_CLEANUP_KEY]?.();
+
+        if (customConfig?.[RAW_RESPONSE_KEY]) return response;
 
         return normalizeResponse(response, this.convertCase);
       },
@@ -178,7 +183,7 @@ export class HttpTransport<TConvertCase extends boolean = false> {
     return this.instance.request<TResponse, AxiosResponse<TResponse>>({
       ...options,
       method: options.method ?? 'GET',
-      rawResponse: true,
-    } as SdkRequestConfig);
+      [RAW_RESPONSE_KEY]: true,
+    } as RawResponseConfig);
   }
 }

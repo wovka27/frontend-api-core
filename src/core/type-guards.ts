@@ -14,6 +14,7 @@ export function isApiErrorPayload(data: unknown): data is ApiErrorPayload {
 
   const hasCode = typeof data.code === 'string' || typeof data.code === 'number';
   const hasMessage = typeof data.message === 'string';
+  const hasErrorName = typeof data.error === 'string';
 
-  return hasCode && hasMessage;
+  return hasCode && hasMessage && hasErrorName;
 }
